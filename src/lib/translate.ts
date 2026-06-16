@@ -1,7 +1,9 @@
 import OpenAI from "openai";
 import { TranscriptSegment } from "./types";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 export async function translateSegments(
   segments: TranscriptSegment[],
@@ -10,7 +12,7 @@ export async function translateSegments(
 ): Promise<TranscriptSegment[]> {
   const batch = segments.map((s) => s.text).join("\n---SEG---\n");
 
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     model: "gpt-4o",
     messages: [
       {
@@ -38,7 +40,7 @@ export async function translateFullText(
   sourceLang: string,
   targetLangName: string
 ): Promise<string> {
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     model: "gpt-4o",
     messages: [
       {

@@ -1,7 +1,9 @@
 import OpenAI from "openai";
 import { TranscriptSegment } from "./types";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 export async function transcribeVideo(
   audioBuffer: Buffer,
@@ -9,7 +11,7 @@ export async function transcribeVideo(
 ): Promise<{ segments: TranscriptSegment[]; detectedLanguage: string; fullText: string }> {
   const file = new File([new Uint8Array(audioBuffer)], filename, { type: "audio/mp4" });
 
-  const response = await openai.audio.transcriptions.create({
+  const response = await getOpenAI().audio.transcriptions.create({
     file,
     model: "whisper-1",
     response_format: "verbose_json",
